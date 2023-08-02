@@ -20,12 +20,12 @@ td {
 }
 
 .board td {
-    width: 70px;
-    height: 70px;
+    width: 30px;
+    height: 30px;
     text-align: center;
     transition: 0.5s;
     padding: 10px;
-    background-color: grey;
+    background-color: rgb(128, 128, 128);
 }
 
 .board td:hover {
@@ -48,3 +48,43 @@ td {
     color: rgb(0, 0, 0);
 }
 
+.buttons {
+    text-align: center;
+    margin-bottom: 10px;
+
+}
+
+button {
+    height: 30px;
+    border-radius: 10%;
+
+}
+
+.easy {
+    background-color: lime;
+}
+
+.easy:hover {
+    background-color: rgb(29, 199, 29);
+}
+
+.normal {
+    background-color: rgb(18, 143, 226);
+    
+}
+.normal:hover {
+    background-color: rgb(0, 153, 255);
+    
+}
+
+.hard {
+    background-color: red;
+}
+
+.hard:hover {
+    background-color: rgb(211, 21, 21);
+}
+
+button:hover {
+    cursor:pointer
+}
