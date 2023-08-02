@@ -3,27 +3,49 @@
 var gBoard
 const EMPTY = ''
 const MINE = '💣'
+var gStartTime = null;
+var gTimerInterval = null;
 var gLevel = {
     SIZE: 4,
     MINES: 2
 }
 
-var gGame = {
-    isOn: false,
-    shownCount: 0,
-    markedCount: 0,
-    secsPassed: 0
-}
+var gGame
 
 function createEmptyBoard() {
 
 }
 
+
+
+
 function onInit() {
+
+
+    clearInterval(gTimerInterval)
+    var elBtn = document.querySelector('.reset')
+    if (gLevel.SIZE === 4) {
+        elBtn.innerHTML = `<button class="restart" onclick=chooseEasy()>😄</button>`
+    } else if (gLevel.SIZE === 8) {
+        elBtn.innerHTML = `<button class="restart" onclick=chooseNormal()>😄</button>`
+    } else {
+        (gLevel.SIZE === 12)
+        elBtn.innerHTML = `<button class="restart" onclick=chooseHard()>😄</button>`
+    }
+
+    gGame = {
+        isOn: false,
+        shownCount: 0,
+        markedCount: 0,
+        secsPassed: 0
+    }
+    const elBox = document.querySelector('.flagged')
+    elBox.innerText = 0
     gGame.isOn = true
     gBoard = createBoard()
     renderBoard(gBoard)
     onCellMarked()
+
 
 
 }
@@ -68,11 +90,11 @@ function renderBoard(board) {
         strHTML += `<tr>\n`
         for (var j = 0; j < board[i].length; j++) {
             const cell = board[i][j]
-            const classStr = cell.isShown ? 'hi' : ''
+            const classStr = cell.isShown ? 'str' : ''
             const showing = cell.isShown ? cell.minesAroundCount : ''
-            strHTML += `\t<td class="hi"
+            strHTML += `\t<td class="str"
              onclick="onCellClicked(this, ${i}, ${j})"
-             oncontextmenu="onCellMarked(this, event,${i},${j})">${showing}</td>\n`
+             oncontextmenu="onCellMarked(this, event,${i},${j})" >${showing}</td>\n`
         }
         strHTML += `</tr>\n`
     }
@@ -102,6 +124,7 @@ function setMinesNegsCount(board, rowIdx, colIdx) {
 function onCellClicked(elCell, rowIdx, colIdx) {
 
 
+
     if (!gGame.isOn || gBoard[rowIdx][colIdx].isShown || gBoard[rowIdx][colIdx].isMarked) return
     if (gBoard[rowIdx][colIdx].isMine) {
         elCell.innerText = '💣'
@@ -111,13 +134,16 @@ function onCellClicked(elCell, rowIdx, colIdx) {
     elCell.innerText = minesCount
     gBoard[rowIdx][colIdx].isShown = true
     gGame.shownCount++
-    if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES  && gGame.markedCount === gLevel.MINES) console.log('Hello');
-
+    console.log('showcount', gGame.shownCount);
+    console.log('markedcount', gGame.markedCount);
+    if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES && gGame.markedCount === gLevel.MINES) onWin()
+    if (gGame.shownCount === 1 && gGame.markedCount === 0 || gGame.shownCount === 0 && gGame.markedCount === 1)
+        startTimer()
 }
 
 
 function onCellMarked(elCell, event, rowIdx, colIdx) {
-    
+
     event.preventDefault()
     if (!gGame.isOn || gBoard[rowIdx][colIdx].isShown) return
     var currCell = gBoard[rowIdx][colIdx]
@@ -133,10 +159,13 @@ function onCellMarked(elCell, event, rowIdx, colIdx) {
     } else {
         elCell.innerText = ''
     }
-    if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES  && gGame.markedCount === gLevel.MINES) console.log('Hello');
-    console.log('showcount', gLevel.shownCount);
+    if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES && gGame.markedCount === gLevel.MINES)
+        console.log('showcount', gGame.shownCount);
     console.log('markedcount', gGame.markedCount);
+    if (gGame.shownCount === 1 && gGame.markedCount === 0 || gGame.shownCount === 0 && gGame.markedCount === 1)
+        startTimer()
 
+    flagCount()
 }
 
 function checkGameOver() {
@@ -149,6 +178,15 @@ function expandShown(board, elCell, i, j) {
 
 function onLose() {
     gGame.isOn = false
+    var elBtn = document.querySelector('.reset')
+    elBtn.innerHTML = `<button class="restart" onclick=onInit()>🤕</button>`
+    stopTimer()
+}
+
+function onWin() {
+    var elBtn = document.querySelector('.reset')
+    elBtn.innerHTML = `<button class="restart" onclick=onInit()>😎</button>`
+    stopTimer()
 
 }
 
@@ -159,6 +197,8 @@ function getRandomIntInclusive(min, max) {
 }
 
 function chooseEasy() {
+    var elBtn = document.querySelector('.reset')
+    elBtn.innerHTML = `<button class="restart" onclick=chooseEasy()>😄</button>`
     gLevel.SIZE = 4
     gLevel.MINES = 2
     onInit()
@@ -166,13 +206,87 @@ function chooseEasy() {
 }
 
 function chooseNormal() {
+    var elBtn = document.querySelector('.reset')
+    elBtn.innerHTML = `<button class="restart" onclick=chooseNormal()>😄</button>`
     gLevel.SIZE = 8
     gLevel.MINES = 14
     onInit()
 }
 
 function chooseHard() {
+    var elBtn = document.querySelector('.reset')
+    elBtn.innerHTML = `<button class="restart" onclick=chooseHard()>😄</button>`
     gLevel.SIZE = 12
     gLevel.MINES = 32
     onInit()
 }
+
+function startTimer() {
+    gStartTime = new Date().getTime();
+    gTimerInterval = setInterval(updateTimerDisplay, 10);
+}
+
+function updateTimerDisplay() {
+    if (!gStartTime) return;
+
+    var currentTime = new Date().getTime();
+    var elapsedTime = currentTime - gStartTime;
+    displayTimer(elapsedTime);
+}
+
+function displayTimer(time) {
+    var minutes = Math.floor(time / 60000);
+    var seconds = Math.floor((time % 60000) / 1000);
+    var milliseconds = (time % 1000).toString().padStart(3, '0');
+
+    var timerDisplay = document.querySelector('.timer-display');
+    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${milliseconds}`;
+}
+
+function stopTimer() {
+    clearInterval(gTimerInterval)
+    gStartTime = null
+}
+
+function flagCount() {
+    const elFlag = document.querySelector('.flagged')
+    elFlag.innerText = `${gGame.markedCount}`
+}
+
+var Modes = true
+function darkMode() {
+    if (Modes) {
+        const elBody = document.querySelector('body')
+        const elAll = document.querySelector('.all')
+        const elEasy = document.querySelector('.easy')
+        const elNormal = document.querySelector('.normal')
+        const elHard = document.querySelector('.hard')
+        const elBtn = document.querySelector('.darkmode')
+
+        elBody.style.backgroundColor = 'rgb(20, 20, 20)'
+        elAll.style.color = 'white'
+        elEasy.style.backgroundColor = 'green'
+        elNormal.style.backgroundColor = 'rgb(35, 114, 163)'
+        elHard.style.backgroundColor = 'rgb(175, 35, 35)'
+        elBtn.innerText = 'Light Mode'
+        Modes = false
+    } else {
+        const elBody = document.querySelector('body')
+        const elAll = document.querySelector('.all')
+        const elEasy = document.querySelector('.easy')
+        const elNormal = document.querySelector('.normal')
+        const elHard = document.querySelector('.hard')
+        const elBtn = document.querySelector('.darkmode')
+
+        elBody.style.backgroundColor = ''
+        elAll.style.color = ''
+        elEasy.style.backgroundColor = ''
+        elNormal.style.backgroundColor = ''
+        elHard.style.backgroundColor = ''
+        Modes = true
+        elBtn.innerText = 'Dark Mode'
+
+    }
+
+}
+

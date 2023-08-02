@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(189, 223, 243);
+    background-color: rgb(182, 194, 194);
 }
 
 h1 {
@@ -25,11 +25,11 @@ td {
     text-align: center;
     transition: 0.5s;
     padding: 10px;
-    background-color: rgb(128, 128, 128);
+    background-color: rgb(255, 255, 255);
 }
 
 .board td:hover {
-    background-color: rgb(166, 166, 172);
+    background-color: rgb(192, 192, 196);
 }
 
 
@@ -44,11 +44,11 @@ td {
     font-size: 30px;
 }
 
-.hi {
+.str {
     color: rgb(0, 0, 0);
 }
 
-.buttons {
+div {
     text-align: center;
     margin-bottom: 10px;
 
@@ -69,7 +69,7 @@ button {
 }
 
 .normal {
-    background-color: rgb(18, 143, 226);
+    background-color: rgb(22, 138, 211);
     
 }
 .normal:hover {
@@ -88,3 +88,11 @@ button {
 button:hover {
     cursor:pointer
 }
+
+
+.restart {
+    background-color: rgb(187, 187, 187);
+    width: 40px;
+}
+
+
