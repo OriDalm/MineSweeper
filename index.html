@@ -10,18 +10,29 @@
 </head>
 
 <body onload="onInit()">
-    <h1>Welcome to MineSweeper!</h1>
-    <div class="buttons">
-        <button class="easy" onclick="chooseEasy()">Easy(4x4)</button>
-        <button class="normal" onclick="chooseNormal()">Normal(8x8)</button>
-        <button class="hard" onclick="chooseHard()">Hard(12x12)</button>
+    <div class="all">
+
+        <h1>Welcome to MineSweeper!</h1>
+        
+        <div class="buttons">
+            <button class="easy" onclick="chooseEasy()">Easy(4x4)</button>
+            <button class="normal" onclick="chooseNormal()">Normal(8x8)</button>
+            <button class="hard" onclick="chooseHard()">Hard(12x12)</button>
+        </div>
+    <div class="reset">
     </div>
     <table class="board">
         <tbody class="board-cells">
         </tbody>
     </table>
-
+    <div class="timer-display">
+        00:00:000
+    </div>
+    <h2 class="flag-text">Flagged: <span class="flagged"></span></h2>
+    <button onclick="darkMode()" class="darkmode">Dark Mode</button>
+    
     <script src="js/main.js"></script>
+</div>
 </body>
 
 </html>
